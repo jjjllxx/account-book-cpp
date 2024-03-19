@@ -10,6 +10,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(TARGET account)
 set(SOURCES
+    Initialisation.cpp
     main.cpp
 )
 
