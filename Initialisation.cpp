@@ -38,7 +38,7 @@ bool abc::Initialisation::initialise()
 bool abc::Initialisation::createUserTable(sqlite3* db)
 {
     const char* sql = "CREATE TABLE IF NOT EXISTS USER("
-                      "ID INT PRIMARY KEY     NOT NULL,"
+                      "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
                       "NAME           TEXT    NOT NULL,"
                       "PASSWORD       TEXT    NOT NULL );";
 
