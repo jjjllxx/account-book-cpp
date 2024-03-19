@@ -1,10 +1,14 @@
 #include "Initialisation.h"
+#include "Registration.h"
 
 #include <iostream>
 
 int main()
 {
-    abc::Initialisation::initialise();
+    if (abc::Initialisation::initialise() == true)
+    {
+        abc::Registration::registerUser();
+    }
 
     return 0;
 }
