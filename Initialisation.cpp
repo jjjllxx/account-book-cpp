@@ -1,41 +1,29 @@
 #include "Initialisation.h"
+#include "DataBus.h"
 #include <iostream>
+#include <sqlite3.h>
 
 bool abc::Initialisation::initialise()
 {
-    sqlite3* db = nullptr;
-
-    if (sqlite3_open("account_book.db", &db) != SQLITE_OK)
-    {
-        std::cerr << "Can't open database: " << sqlite3_errmsg(db) << std::endl;
-        return false;
-    }
-    else
-    {
-        std::cout << "Opened database successfully" << std::endl;
-    }
-
-    if (abc::Initialisation::createUserTable(db) == false)
+    if (abc::Initialisation::createUserTable() == false)
     {
         return false;
     }
 
-    if (abc::Initialisation::createIncomeTable(db) == false)
+    if (abc::Initialisation::createIncomeTable() == false)
     {
         return false;
     }
 
-    if (abc::Initialisation::createExpenseTable(db) == false)
+    if (abc::Initialisation::createExpenseTable() == false)
     {
         return false;
     }
-
-    sqlite3_close(db);
 
     return true;
 }
 
-bool abc::Initialisation::createUserTable(sqlite3* db)
+bool abc::Initialisation::createUserTable()
 {
     const char* sql = "CREATE TABLE IF NOT EXISTS USER("
                       "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -43,7 +31,7 @@ bool abc::Initialisation::createUserTable(sqlite3* db)
                       "PASSWORD       TEXT    NOT NULL );";
 
     char* errMsg = nullptr;
-    if (sqlite3_exec(db, sql, nullptr, nullptr, &errMsg) != SQLITE_OK)
+    if (sqlite3_exec(abc::DataBus::openDatabase(), sql, nullptr, nullptr, &errMsg) != SQLITE_OK)
     {
         std::cerr << "Error creating table: " << errMsg << std::endl;
         sqlite3_free(errMsg);
@@ -58,7 +46,7 @@ bool abc::Initialisation::createUserTable(sqlite3* db)
     }
 }
 
-bool abc::Initialisation::createIncomeTable(sqlite3* db)
+bool abc::Initialisation::createIncomeTable()
 {
     const char* sql = "CREATE TABLE IF NOT EXISTS INCOME ("
                       "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -68,7 +56,7 @@ bool abc::Initialisation::createIncomeTable(sqlite3* db)
                       "DATE DATE NOT NULL);";
 
     char* errMsg = nullptr;
-    if (sqlite3_exec(db, sql, nullptr, nullptr, &errMsg) != SQLITE_OK)
+    if (sqlite3_exec(abc::DataBus::openDatabase(), sql, nullptr, nullptr, &errMsg) != SQLITE_OK)
     {
         std::cerr << "Error creating table: " << errMsg << std::endl;
         sqlite3_free(errMsg);
@@ -83,7 +71,7 @@ bool abc::Initialisation::createIncomeTable(sqlite3* db)
     }
 }
 
-bool abc::Initialisation::createExpenseTable(sqlite3* db)
+bool abc::Initialisation::createExpenseTable()
 {
     const char* sql = "CREATE TABLE IF NOT EXISTS EXPENSE ("
                       "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -93,7 +81,7 @@ bool abc::Initialisation::createExpenseTable(sqlite3* db)
                       "DATE DATE NOT NULL);";
 
     char* errMsg = nullptr;
-    if (sqlite3_exec(db, sql, nullptr, nullptr, &errMsg) != SQLITE_OK)
+    if (sqlite3_exec(abc::DataBus::openDatabase(), sql, nullptr, nullptr, &errMsg) != SQLITE_OK)
     {
         std::cerr << "Error creating table: " << errMsg << std::endl;
         sqlite3_free(errMsg);

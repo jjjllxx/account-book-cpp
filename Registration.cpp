@@ -1,7 +1,7 @@
 #include "Registration.h"
+#include "DataBus.h"
 #include <cctype>
 #include <iostream>
-#include <sqlite3.h>
 #include <string>
 
 void abc::Registration::registerUser()
@@ -49,13 +49,7 @@ void abc::Registration::registerUser()
 bool abc::Registration::insertToDatabase(const std::string& name,
                                          const std::string& pw)
 {
-    sqlite3* db = nullptr;
-
-    if (sqlite3_open("account_book.db", &db) != SQLITE_OK)
-    {
-        std::cerr << "Can't open database: " << sqlite3_errmsg(db) << std::endl;
-        return false;
-    }
+    sqlite3* db = abc::DataBus::openDatabase();
 
     const char* sqlInsert = "INSERT INTO USER (NAME, PASSWORD) VALUES (?, ?);";
 
@@ -63,7 +57,7 @@ bool abc::Registration::insertToDatabase(const std::string& name,
     if (sqlite3_prepare_v2(db, sqlInsert, -1, &stmt, nullptr) != SQLITE_OK)
     {
         std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
-        sqlite3_close(db);
+        abc::DataBus::closeDatabase();
         return false;
     }
 
@@ -73,15 +67,12 @@ bool abc::Registration::insertToDatabase(const std::string& name,
     if (sqlite3_step(stmt) != SQLITE_DONE)
     {
         std::cerr << "Error inserting values: " << sqlite3_errmsg(db) << std::endl;
-        sqlite3_close(db);
+        abc::DataBus::closeDatabase();
         return false;
     }
 
-    std::cout << "Values inserted successfully." << std::endl;
-
     // Finalize the prepared statement and close the database
     sqlite3_finalize(stmt);
-    sqlite3_close(db);
 
     return true;
 }
