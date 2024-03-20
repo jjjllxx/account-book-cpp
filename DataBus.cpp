@@ -29,6 +29,9 @@ sqlite3* abc::DataBus::openDatabase()
 
 void abc::DataBus::closeDatabase()
 {
-    sqlite3_close(abc::DataBus::instance().db);
-    abc::DataBus::instance().db = nullptr;
+    if (abc::DataBus::instance().db != nullptr)
+    {
+        sqlite3_close(abc::DataBus::instance().db);
+        abc::DataBus::instance().db = nullptr;
+    }
 }

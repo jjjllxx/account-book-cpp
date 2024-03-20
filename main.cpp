@@ -1,3 +1,4 @@
+#include "DataBus.h"
 #include "Initialisation.h"
 #include "Registration.h"
 
@@ -9,6 +10,8 @@ int main()
     {
         abc::Registration::registerUser();
     }
+
+    abc::DataBus::closeDatabase();
 
     return 0;
 }
